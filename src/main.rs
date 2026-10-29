@@ -134,7 +134,10 @@ fn fcfs(
     _config: &Config,
     _rr_elapsed: &mut u64,
 ) -> Option<usize> {
-    // YOUR IMPLEMENTATION GOES HERE
+    // Because FCFS is non-preemptive, the current
+    // process runs until completion, since it arrived
+    // first. Therefore, we return ci.
+    return Some(ci);
 }
 
 fn sjf(
@@ -144,7 +147,25 @@ fn sjf(
     _config: &Config,
     _rr_elapsed: &mut u64,
 ) -> Option<usize> {
-    // YOUR IMPLEMENTATION GOES HERE
+    // Iterates through the queue of ready processes
+    for &i in queue.iter() {
+        // Checks if the remaining time of the current
+        // process is greater than the remaining time of
+        // the process at index i in the queue
+        if(procs[i].remaining < procs[ci].remaining) {
+            // Preempts the current process and adds it back to the queue
+            preempt(procs[ci].pid.unwrap());
+            queue.push(ci);
+            // Returns none, so the scheduler can
+            // select the next process to run
+            return None;
+        }
+    }
+    // If the remaining time of the current process
+    // is less than or equal to the remaining time of
+    // any process in the queue, we continue running
+    // the current process
+    return Some(ci);
 }
 
 fn rr(
