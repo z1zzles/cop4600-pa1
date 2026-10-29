@@ -134,9 +134,8 @@ fn fcfs(
     _config: &Config,
     _rr_elapsed: &mut u64,
 ) -> Option<usize> {
-    // Because FCFS is non-preemptive, the current
-    // process runs until completion, since it arrived
-    // first. Therefore, we return ci.
+    // Because FCFS is non-preemptive, the current process runs until completion,
+    // since it arrived first. Therefore, we return ci.
     return Some(ci);
 }
 
@@ -149,22 +148,19 @@ fn sjf(
 ) -> Option<usize> {
     // Iterates through the queue of ready processes
     for &i in queue.iter() {
-        // Checks if the remaining time of the current
-        // process is greater than the remaining time of
-        // the process at index i in the queue
+        // Checks if the remaining time of the current process is greater
+        // than the remaining time of the process at index i in the queue
         if(procs[i].remaining < procs[ci].remaining) {
             // Preempts the current process and adds it back to the queue
             preempt(procs[ci].pid.unwrap());
             queue.push(ci);
-            // Returns none, so the scheduler can
-            // select the next process to run
+            // Returns none, so the scheduler can select the next process to run
             return None;
         }
     }
-    // If the remaining time of the current process
-    // is less than or equal to the remaining time of
-    // any process in the queue, we continue running
-    // the current process
+    // If the remaining time of the current process is less than
+    // or equal to the remaining time of any process
+    // in the queue, we continue running the current process
     return Some(ci);
 }
 
@@ -175,7 +171,19 @@ fn rr(
     config: &Config,
     rr_elapsed: &mut u64,
 ) -> Option<usize> {
-    // YOUR IMPLEMENTATION GOES HERE
+    // Checks if the elapsed time for current turn is greater than
+    // or equal to the quantum, and if the queue is not empty
+    if(*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty()) {
+        // Preempts the current process and adds it back to the queue
+        preempt(procs[ci].pid.unwrap());
+        queue.push(ci);
+        // Returns none, so the scheduler can select the next
+        // process to run, just like SJF
+        return None;
+    }
+    // If the current process has not yet exceeded its quantum,
+    // we continue running the current process
+    return Some(ci);
 }
 
 fn run_scheduler(config: &Config, out: &mut File) {
