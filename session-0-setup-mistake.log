@@ -1,0 +1,415 @@
+Script started on 2026-10-30 19:43:41+00:00 [TERM="xterm" TTY="/dev/pts/0" COLUMNS="120" LINES="30"]
+# git --no-pager branch
+cargo build* [32mai-debug[m
+# mkdir -p /tmp/expected && cp tests/*.out /tmp/expected/
+fails=0; for i in $(seq 1 200); do ./target/debug/scheduler-gpt tests/rr.in; diff -q tests/rr.out /tmp/expected/rr.out >/dev/null || { fails=$((fails+1)); echo "run $i differs"; }; done; echo "differing runs: $fails"
+git checkout tests/[1m[31merror[0m[1m:[0m no such command: `buildmkdir`
+
+	View all installed commands with `cargo --list`
+	Find a package to install `buildmkdir` with `cargo search cargo-buildmkdir`
+# diff: /tmp/expected/rr.out: No such file or directory
+run 1 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 2 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 3 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 4 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 5 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 6 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 7 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 8 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 9 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 10 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 11 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 12 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 13 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 14 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 15 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 16 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 17 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 18 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 19 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 20 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 21 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 22 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 23 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 24 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 25 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 26 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 27 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 28 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 29 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 30 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 31 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 32 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 33 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 34 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 35 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 36 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 37 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 38 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 39 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 40 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 41 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 42 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 43 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 44 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 45 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 46 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 47 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 48 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 49 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 50 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 51 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 52 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 53 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 54 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 55 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 56 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 57 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 58 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 59 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 60 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 61 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 62 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 63 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 64 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 65 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 66 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 67 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 68 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 69 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 70 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 71 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 72 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 73 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 74 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 75 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 76 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 77 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 78 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 79 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 80 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 81 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 82 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 83 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 84 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 85 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 86 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 87 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 88 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 89 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 90 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 91 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 92 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 93 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 94 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 95 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 96 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 97 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 98 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 99 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 100 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 101 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 102 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 103 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 104 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 105 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 106 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 107 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 108 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 109 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 110 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 111 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 112 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 113 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 114 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 115 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 116 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 117 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 118 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 119 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 120 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 121 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 122 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 123 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 124 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 125 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 126 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 127 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 128 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 129 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 130 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 131 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 132 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 133 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 134 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 135 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 136 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 137 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 138 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 139 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 140 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 141 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 142 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 143 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 144 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 145 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 146 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 147 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 148 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 149 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 150 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 151 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 152 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 153 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 154 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 155 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 156 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 157 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 158 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 159 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 160 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 161 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 162 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 163 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 164 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 165 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 166 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 167 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 168 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 169 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 170 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 171 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 172 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 173 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 174 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 175 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 176 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 177 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 178 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 179 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 180 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 181 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 182 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 183 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 184 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 185 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 186 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 187 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 188 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 189 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 190 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 191 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 192 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 193 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 194 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 195 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 196 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 197 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 198 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 199 differs
+diff: /tmp/expected/rr.out: No such file or directory
+run 200 differs
+differing runs: 200
+# exit
+error: pathspec 'tests/exit' did not match any file(s) known to git
+# exit
+
+Script done on 2026-10-30 19:54:11+00:00 [COMMAND_EXIT_CODE="1"]

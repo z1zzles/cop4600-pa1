@@ -1,0 +1,253 @@
+Script started on 2026-10-30 19:54:50+00:00 [TERM="xterm" TTY="/dev/pts/0" COLUMNS="120" LINES="30"]
+# cargo build
+[0m[1m[33mwarning[0m[0m[1m: unnecessary parentheses around `if` condition[0m
+[0m   [0m[0m[1m[38;5;12m--> [0m[0msrc/main.rs:153:11[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0m        if(procs[i].remaining < procs[ci].remaining) {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m[0m           [0m[0m[1m[33m^[0m[0m                                        [0m[0m[1m[33m^[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m    [0m[0m[1m[38;5;12m= [0m[0m[1mnote[0m[0m: `#[warn(unused_parens)]` on by default[0m
+[0m[1m[38;5;14mhelp[0m[0m: remove these parentheses[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[38;5;9m- [0m[0m        if[0m[0m[38;5;9m([0m[0mprocs[i].remaining < procs[ci].remaining[0m[0m[38;5;9m)[0m[0m {[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[38;5;10m+ [0m[0m        if[0m[0m[38;5;10m [0m[0mprocs[i].remaining < procs[ci].remaining {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+
+[0m[1m[33mwarning[0m[0m[1m: unnecessary parentheses around `if` condition[0m
+[0m   [0m[0m[1m[38;5;12m--> [0m[0msrc/main.rs:176:7[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0m    if(*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty()) {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m[0m       [0m[0m[1m[33m^[0m[0m                                                           [0m[0m[1m[33m^[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;14mhelp[0m[0m: remove these parentheses[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[38;5;9m- [0m[0m    if[0m[0m[38;5;9m([0m[0m*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty()[0m[0m[38;5;9m)[0m[0m {[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[38;5;10m+ [0m[0m    if[0m[0m[38;5;10m [0m[0m*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty() {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+
+[0m[1m[33mwarning[0m[0m[1m: function `try_reap` is never used[0m
+[0m  [0m[0m[1m[38;5;12m--> [0m[0msrc/process_control.rs:56:8[0m
+[0m   [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m56[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0mpub fn try_reap(pid: Pid) -> bool {[0m
+[0m   [0m[0m[1m[38;5;12m|[0m[0m        [0m[0m[1m[33m^^^^^^^^[0m
+[0m   [0m[0m[1m[38;5;12m|[0m
+[0m   [0m[0m[1m[38;5;12m= [0m[0m[1mnote[0m[0m: `#[warn(dead_code)]` on by default[0m
+
+[1m[33mwarning[0m[1m:[0m `scheduler-gpt` (bin "scheduler-gpt") generated 3 warnings (run `cargo fix --bin "scheduler-gpt"` to apply 2 suggestions)
+[1m[32m    Finished[0m `dev` profile [unoptimized + debuginfo] target(s) in 0.57s
+# mkdir -p /tmp/expected
+# cp tests/*.out /tmp/expected/
+# ls -l /tmp/expected/
+total 12
+-rw-r--r-- 1 root root 457 Oct 30 19:55 fcfs.out
+-rw-r--r-- 1 root root 559 Oct 30 19:55 rr.out
+-rw-r--r-- 1 root root 559 Oct 30 19:55 sjf.out
+# fails=0; for i in $(seq 1 200); do ./target/debug/scheduler-gpt tests/rr.in; diff -q tests/rr.out /tmp/expected/rr.out >/dev/null || { fails=$((fails+1)); echo "run $i differs"; }; done; echo "differing runs: $fails"
+run 58 differs
+run 108 differs
+differing runs: 2
+# git checkout tests/
+Updated 1 path from the index
+# strace -f -e trace=waitpid,kill cargo run --release -- test_input.in
+[1m[31merror[0m[1m:[0m `cargo run` could not determine which binary to run. Use the `--bin` option to specify a binary, or the `default-run` manifest key.
+available binaries: scheduler-gpt, workload
++++ exited with 101 +++
+# cargo build --release
+strace -f -e trace=waitpid,kill ./target/release/scheduler-gpt test_input.in[1m[32m   Compiling[0m libc v0.2.190
+[1m[32m   Compiling[0m cfg-if v1.0.5
+[1m[32m   Compiling[0m bitflags v2.13.2
+[1m[36m    Building[0m [                             ] 0/8: bitflags, libc(build.rs), cfg-if                                    [1m[36m    Building[0m [==>                          ] 1/8: bitflags, libc(build.rs)                                            [1m[36m    Building[0m [======>                      ] 2/8: libc(build.rs)                                                      [1m[36m    Building[0m [=========>                   ] 3/8: libc(build)                                                         [1m[36m    Building[0m [=============>               ] 4/8: libc                                                                [K[1m[32m   Compiling[0m nix v0.27.1
+[1m[36m    Building[0m [=============>               ] 4/8: libc, nix                                                           [1m[36m    Building[0m [=================>           ] 5/8: nix                                                                 [K[1m[32m   Compiling[0m scheduler-gpt v0.1.0 (/workspace)
+[1m[36m    Building[0m [====================>        ] 6/8: workload(bin), scheduler-gpt(bin)                                   [K[0m[1m[33mwarning[0m[0m[1m: unnecessary parentheses around `if` condition[0m
+[0m   [0m[0m[1m[38;5;12m--> [0m[0msrc/main.rs:153:11[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0m        if(procs[i].remaining < procs[ci].remaining) {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m[0m           [0m[0m[1m[33m^[0m[0m                                        [0m[0m[1m[33m^[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m    [0m[0m[1m[38;5;12m= [0m[0m[1mnote[0m[0m: `#[warn(unused_parens)]` on by default[0m
+[0m[1m[38;5;14mhelp[0m[0m: remove these parentheses[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[38;5;9m- [0m[0m        if[0m[0m[38;5;9m([0m[0mprocs[i].remaining < procs[ci].remaining[0m[0m[38;5;9m)[0m[0m {[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[38;5;10m+ [0m[0m        if[0m[0m[38;5;10m [0m[0mprocs[i].remaining < procs[ci].remaining {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+
+[1m[36m    Building[0m [====================>        ] 6/8: workload(bin), scheduler-gpt(bin)                                   [K[0m[1m[33mwarning[0m[0m[1m: unnecessary parentheses around `if` condition[0m
+[0m   [0m[0m[1m[38;5;12m--> [0m[0msrc/main.rs:176:7[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0m    if(*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty()) {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m[0m       [0m[0m[1m[33m^[0m[0m                                                           [0m[0m[1m[33m^[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;14mhelp[0m[0m: remove these parentheses[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[38;5;9m- [0m[0m    if[0m[0m[38;5;9m([0m[0m*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty()[0m[0m[38;5;9m)[0m[0m {[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[38;5;10m+ [0m[0m    if[0m[0m[38;5;10m [0m[0m*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty() {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+
+[1m[36m    Building[0m [====================>        ] 6/8: workload(bin), scheduler-gpt(bin)                                   [K[0m[1m[33mwarning[0m[0m[1m: function `try_reap` is never used[0m
+[0m  [0m[0m[1m[38;5;12m--> [0m[0msrc/process_control.rs:56:8[0m
+[0m   [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m56[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0mpub fn try_reap(pid: Pid) -> bool {[0m
+[0m   [0m[0m[1m[38;5;12m|[0m[0m        [0m[0m[1m[33m^^^^^^^^[0m
+[0m   [0m[0m[1m[38;5;12m|[0m
+[0m   [0m[0m[1m[38;5;12m= [0m[0m[1mnote[0m[0m: `#[warn(dead_code)]` on by default[0m
+
+[1m[36m    Building[0m [====================>        ] 6/8: workload(bin), scheduler-gpt(bin)                                   [1m[36m    Building[0m [========================>    ] 7/8: scheduler-gpt(bin)                                                  [K[1m[33mwarning[0m[1m:[0m `scheduler-gpt` (bin "scheduler-gpt") generated 3 warnings (run `cargo fix --bin "scheduler-gpt"` to apply 2 suggestions)
+[1m[32m    Finished[0m `release` profile [optimized] target(s) in 10.63s
+# strace -f -e trace=waitpid,kill ./target/release/scheduler-gpt test_input.in
+Usage: scheduler-gpt <input file>
++++ exited with 1 +++
+# cargo build --release
+strace -f -e trace=waitpid,kill ./target/release/scheduler-gpt tests/rr.in[1m[32m   Compiling[0m libc v0.2.190
+[1m[36m    Building[0m [=========>                   ] 3/8: libc(build)                                                         [1m[36m    Building[0m [=============>               ] 4/8: libc                                                                [K[1m[32m   Compiling[0m nix v0.27.1
+[1m[36m    Building[0m [=============>               ] 4/8: nix, libc                                                           [1m[36m    Building[0m [=================>           ] 5/8: nix                                                                 [K[1m[32m   Compiling[0m scheduler-gpt v0.1.0 (/workspace)
+[1m[36m    Building[0m [====================>        ] 6/8: scheduler-gpt(bin), workload(bin)                                   [K[0m[1m[33mwarning[0m[0m[1m: unnecessary parentheses around `if` condition[0m
+[0m   [0m[0m[1m[38;5;12m--> [0m[0msrc/main.rs:153:11[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0m        if(procs[i].remaining < procs[ci].remaining) {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m[0m           [0m[0m[1m[33m^[0m[0m                                        [0m[0m[1m[33m^[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m    [0m[0m[1m[38;5;12m= [0m[0m[1mnote[0m[0m: `#[warn(unused_parens)]` on by default[0m
+[0m[1m[38;5;14mhelp[0m[0m: remove these parentheses[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[38;5;9m- [0m[0m        if[0m[0m[38;5;9m([0m[0mprocs[i].remaining < procs[ci].remaining[0m[0m[38;5;9m)[0m[0m {[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[38;5;10m+ [0m[0m        if[0m[0m[38;5;10m [0m[0mprocs[i].remaining < procs[ci].remaining {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+
+[1m[36m    Building[0m [====================>        ] 6/8: scheduler-gpt(bin), workload(bin)                                   [K[0m[1m[33mwarning[0m[0m[1m: unnecessary parentheses around `if` condition[0m
+[0m   [0m[0m[1m[38;5;12m--> [0m[0msrc/main.rs:176:7[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0m    if(*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty()) {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m[0m       [0m[0m[1m[33m^[0m[0m                                                           [0m[0m[1m[33m^[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;14mhelp[0m[0m: remove these parentheses[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[38;5;9m- [0m[0m    if[0m[0m[38;5;9m([0m[0m*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty()[0m[0m[38;5;9m)[0m[0m {[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[38;5;10m+ [0m[0m    if[0m[0m[38;5;10m [0m[0m*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty() {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+
+[1m[36m    Building[0m [====================>        ] 6/8: scheduler-gpt(bin), workload(bin)                                   [K[0m[1m[33mwarning[0m[0m[1m: function `try_reap` is never used[0m
+[0m  [0m[0m[1m[38;5;12m--> [0m[0msrc/process_control.rs:56:8[0m
+[0m   [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m56[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0mpub fn try_reap(pid: Pid) -> bool {[0m
+[0m   [0m[0m[1m[38;5;12m|[0m[0m        [0m[0m[1m[33m^^^^^^^^[0m
+[0m   [0m[0m[1m[38;5;12m|[0m
+[0m   [0m[0m[1m[38;5;12m= [0m[0m[1mnote[0m[0m: `#[warn(dead_code)]` on by default[0m
+
+[1m[36m    Building[0m [====================>        ] 6/8: scheduler-gpt(bin), workload(bin)                                   [1m[36m    Building[0m [========================>    ] 7/8: scheduler-gpt(bin)                                                  [K[1m[33mwarning[0m[1m:[0m `scheduler-gpt` (bin "scheduler-gpt") generated 3 warnings (run `cargo fix --bin "scheduler-gpt"` to apply 2 suggestions)
+[1m[32m    Finished[0m `release` profile [optimized] target(s) in 6.02s
+# strace -f -e trace=waitpid,kill ./target/release/scheduler-gpt tests/rr.in
+Usage: scheduler-gpt <input file>
++++ exited with 1 +++
+# git checkout tests/
+Updated 0 paths from the index
+# git checkout tests/                   cd /workspace
+# cargo build
+[0m[1m[33mwarning[0m[0m[1m: unnecessary parentheses around `if` condition[0m
+[0m   [0m[0m[1m[38;5;12m--> [0m[0msrc/main.rs:153:11[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0m        if(procs[i].remaining < procs[ci].remaining) {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m[0m           [0m[0m[1m[33m^[0m[0m                                        [0m[0m[1m[33m^[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m    [0m[0m[1m[38;5;12m= [0m[0m[1mnote[0m[0m: `#[warn(unused_parens)]` on by default[0m
+[0m[1m[38;5;14mhelp[0m[0m: remove these parentheses[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[38;5;9m- [0m[0m        if[0m[0m[38;5;9m([0m[0mprocs[i].remaining < procs[ci].remaining[0m[0m[38;5;9m)[0m[0m {[0m
+[0m[1m[38;5;12m153[0m[0m [0m[0m[38;5;10m+ [0m[0m        if[0m[0m[38;5;10m [0m[0mprocs[i].remaining < procs[ci].remaining {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+
+[0m[1m[33mwarning[0m[0m[1m: unnecessary parentheses around `if` condition[0m
+[0m   [0m[0m[1m[38;5;12m--> [0m[0msrc/main.rs:176:7[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0m    if(*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty()) {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m[0m       [0m[0m[1m[33m^[0m[0m                                                           [0m[0m[1m[33m^[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;14mhelp[0m[0m: remove these parentheses[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[38;5;9m- [0m[0m    if[0m[0m[38;5;9m([0m[0m*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty()[0m[0m[38;5;9m)[0m[0m {[0m
+[0m[1m[38;5;12m176[0m[0m [0m[0m[38;5;10m+ [0m[0m    if[0m[0m[38;5;10m [0m[0m*rr_elapsed >= config.quantum.unwrap() && !queue.is_empty() {[0m
+[0m    [0m[0m[1m[38;5;12m|[0m
+
+[0m[1m[33mwarning[0m[0m[1m: function `try_reap` is never used[0m
+[0m  [0m[0m[1m[38;5;12m--> [0m[0msrc/process_control.rs:56:8[0m
+[0m   [0m[0m[1m[38;5;12m|[0m
+[0m[1m[38;5;12m56[0m[0m [0m[0m[1m[38;5;12m|[0m[0m [0m[0mpub fn try_reap(pid: Pid) -> bool {[0m
+[0m   [0m[0m[1m[38;5;12m|[0m[0m        [0m[0m[1m[33m^^^^^^^^[0m
+[0m   [0m[0m[1m[38;5;12m|[0m
+[0m   [0m[0m[1m[38;5;12m= [0m[0m[1mnote[0m[0m: `#[warn(dead_code)]` on by default[0m
+
+[1m[33mwarning[0m[1m:[0m `scheduler-gpt` (bin "scheduler-gpt") generated 3 warnings (run `cargo fix --bin "scheduler-gpt"` to apply 2 suggestions)
+[1m[32m    Finished[0m `dev` profile [unoptimized + debuginfo] target(s) in 2.53s
+# ls -l /tmp/expected/
+total 12
+-rw-r--r-- 1 root root 457 Oct 30 19:55 fcfs.out
+-rw-r--r-- 1 root root 559 Oct 30 19:55 rr.out
+-rw-r--r-- 1 root root 559 Oct 30 19:55 sjf.out
+# ##  git checkout tests/
+Updated 0 paths from the index
+# fails=0; for i in $(seq 1 200); do ./target/debug/scheduler-gpt tests/rr.in; diff -q tests/rr.out /tmp/expected/rr.out >/dev/null || { fails=$((fails+1)); echo "run $i differs"; }; done; echo "differing runs: $fails"
+run 1 differs
+run 3 differs
+run 8 differs
+run 10 differs
+run 15 differs
+run 16 differs
+run 17 differs
+run 18 differs
+run 19 differs
+run 20 differs
+run 21 differs
+run 22 differs
+run 23 differs
+run 24 differs
+run 25 differs
+run 26 differs
+run 27 differs
+run 28 differs
+run 29 differs
+run 30 differs
+run 31 differs
+run 33 differs
+run 35 differs
+run 38 differs
+run 44 differs
+run 59 differs
+run 62 differs
+run 63 differs
+run 118 differs
+run 133 differs
+run 134 differs
+run 138 differs
+run 143 differs
+run 144 differs
+run 145 differs
+run 153 differs
+run 154 differs
+run 158 differs
+run 159 differs
+run 161 differs
+run 163 differs
+run 174 differs
+differing runs: 42
+# git checkout tests/
+Updated 1 path from the index
+# ./target/debug/scheduler-gpt tests/rr.in
+# diff tests/rr.out /tmp/expected/rr.out
+# git checkout tests/
+Updated 1 path from the index
+# for i in $(seq 1 30); do ./target/debug/scheduler-gpt tests/rr.in; if ! diff -q tests/rr.out /tmp/expected/rr.out >/dev/null; then echo "=== run $i ==="; diff tests/rr.out /tmp/expected/rr.out; break; fi; done
+=== run 12 ===
+15,16c15,16
+< Time  13 : C finished
+< Time  13 : Idle
+---
+> Time  12 : C finished
+> Time  12 : Idle
+23c23
+< C wait   6 turnaround  11  response 2
+---
+> C wait   5 turnaround  10  response 2
+# git checkout tests/
+Updated 1 path from the index
+# exit
+
+Script done on 2026-10-30 21:07:42+00:00 [COMMAND_EXIT_CODE="0"]
