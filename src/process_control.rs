@@ -9,6 +9,7 @@
 // it, a stop signal can race with process startup) -- the wrappers don't
 // hide that reasoning from you, only the raw libc calls.
 
+use nix::errno::Errno;
 use nix::sys::signal::{kill, Signal};
 use nix::sys::wait::{waitpid, WaitPidFlag, WaitStatus};
 use nix::unistd::{execvp, fork, ForkResult, Pid};
@@ -66,6 +67,40 @@ pub fn try_reap(pid: Pid) -> bool {
 /// after your scheduler exits.
 pub fn terminate(pid: Pid) {
     let _ = kill(pid, Signal::SIGKILL);
+}
+
+/// Kill a child AND remove it from the process table. This is what
+/// end-of-run cleanup must use: SIGKILL alone turns the child into a
+/// zombie, and only a wait by its parent (us) removes that zombie.
+///
+/// Why the wait must be BLOCKING (no WNOHANG):
+///   kill() returns as soon as the signal is queued, not when the child
+///   is dead. The child still has to be scheduled and run its exit path
+///   before it becomes waitable, so a WNOHANG wait issued right after
+///   kill() usually sees "still alive" and reaps nothing.
+///
+/// Why the blocking wait is guaranteed to return:
+///   - SIGKILL cannot be caught, blocked, or ignored, and it is delivered
+///     even to a SIGSTOPped process, so the child will die.
+///   - waitpid without WUNTRACED/WCONTINUED reports only termination, so
+///     it cannot return early just because the child is stopped.
+///   - If the child had already exited on its own (it is a zombie),
+///     kill() on a zombie still succeeds and waitpid reaps it at once.
+///
+/// EINTR is retried: if a signal handler ever interrupts the wait, the
+/// child has not been reaped yet, so giving up would leak it.
+///
+/// Returns how the child ended (normally Signaled(pid, SIGKILL, _), or
+/// Exited if it finished on its own first), or the error if `pid` is not
+/// a live-or-zombie child of ours.
+pub fn terminate_and_reap(pid: Pid) -> nix::Result<WaitStatus> {
+    kill(pid, Signal::SIGKILL)?;
+    loop {
+        match waitpid(pid, None) {
+            Err(Errno::EINTR) => continue,
+            other => return other,
+        }
+    }
 }
 
 /// Blocking reap -- waits for the given child to actually exit. Used
