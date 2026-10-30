@@ -72,7 +72,13 @@ pub fn terminate(pid: Pid) {
 /// during cleanup, and to confirm a selected process's completion before
 /// you log it as finished.
 pub fn reap_blocking(pid: Pid) {
-    let _ = waitpid(pid, None);
+    loop {
+        match waitpid(pid, None) {
+            Ok(_) => break,
+            Err(nix::errno::Errno::EINTR) => continue,
+            Err(_) => break,
+        }
+    }
 }
 
 /// Milliseconds elapsed since a fixed reference point you establish at
