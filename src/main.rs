@@ -5,7 +5,7 @@
 mod process_control;
 
 use nix::unistd::Pid;
-use process_control::{now_ms, preempt, reap_blocking, resume, spawn_paused, terminate};
+use process_control::{now_ms, preempt, reap_blocking, resume, spawn_paused, terminate_and_reap};
 use std::env;
 use std::fs::{self, File};
 use std::io::Write;
@@ -329,11 +329,17 @@ fn run_scheduler(config: &Config, out: &mut File) {
         writeln!(out, "{}", line).expect("failed to write output");
     }
 
-    // Cleanup: kill off anything that didn't finish within runfor.
+    // Cleanup: every child we spawned must be gone from the process table
+    // before we exit. Anything that didn't finish within runfor (still
+    // running, or stopped in the ready queue) is SIGKILLed AND then reaped
+    // with a blocking wait. SIGKILL alone would leave a <defunct> zombie,
+    // because only the parent's wait removes a dead child's table entry.
     for p in &procs {
         if !p.finished {
             if let Some(pid) = p.pid {
-                terminate(pid);
+                if let Err(e) = terminate_and_reap(pid) {
+                    eprintln!("cleanup: failed to kill/reap {} (pid {}): {}", p.spec.name, pid, e);
+                }
             }
         }
     }
