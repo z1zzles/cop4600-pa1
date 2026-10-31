@@ -12,7 +12,7 @@
 use nix::errno::Errno;
 use nix::sys::signal::{kill, Signal};
 use nix::sys::wait::{waitpid, WaitPidFlag, WaitStatus};
-use nix::unistd::{execvp, fork, ForkResult, Pid};
+use nix::unistd::{close, execvp, fork, pipe, read, write, ForkResult, Pid};
 use std::ffi::CString;
 use std::time::Instant;
 
@@ -20,38 +20,57 @@ use std::time::Instant;
 /// workload code, so it consumes no CPU until the scheduler explicitly
 /// resumes it. Returns the child's PID once the child is confirmed stopped.
 ///
-/// Why the child stops itself, before execvp:
-///   Stopping it from the parent (kill(child, SIGSTOP) right after fork)
-///   races with the child, which is runnable the moment fork returns. If
-///   the parent loses the CPU before that signal lands, the child execs
-///   and burns part of its burst before any scheduling decision selected
-///   it. A child that stops itself cannot reach the workload until the
-///   scheduler's SIGCONT, however late the parent gets to run.
+/// Why the child waits on a pipe ("gate") before execvp:
+///   The child is runnable the moment fork returns, so the parent's
+///   kill(child, SIGSTOP) races with it. If the parent loses the CPU
+///   before that signal lands, the child execs and burns part of its
+///   burst before any scheduling decision selected it. Instead the child
+///   blocks reading the gate, and the parent opens the gate only once
+///   the stop has landed, so the child cannot reach the workload until
+///   the scheduler's SIGCONT, however late the parent gets to run.
 ///
-/// Why the parent must wait for that stop (WUNTRACED):
-///   A process can be selected in its arrival tick, microseconds after
-///   fork. If that SIGCONT arrived before the child had stopped itself it
-///   would do nothing, the child would then stop with nobody left to
-///   resume it, and reap_blocking would hang. For the same reason the
-///   parent no longer sends its own SIGSTOP: parent-stop, then SIGCONT,
-///   would let the child run on into its own stop and stay there.
+/// Why the parent waits for the stop (WUNTRACED) before opening the gate:
+///   kill() returns once the signal is queued, not once the child is
+///   stopped, so opening the gate right away could let a child that has
+///   not stopped yet run straight on into exec. Waiting also guarantees
+///   that a process selected in its arrival tick, microseconds after
+///   fork, is already stopped when its SIGCONT is sent.
 pub fn spawn_paused(workload_path: &str, ticks: u64) -> Pid {
-    // Built before fork so the child has as little to do as possible
-    // before stopping itself.
+    // Built before fork so the child has as little to do as possible.
     let prog = CString::new(workload_path).unwrap();
     let args = [prog.clone(), CString::new(ticks.to_string()).unwrap()];
+    let (gate_r, gate_w) = pipe().expect("failed to create gate pipe");
 
     match unsafe { fork() }.expect("fork failed") {
-        ForkResult::Parent { child } => loop {
-            match waitpid(child, Some(WaitPidFlag::WUNTRACED)) {
-                Ok(WaitStatus::Stopped(_, Signal::SIGSTOP)) => return child,
-                Err(Errno::EINTR) => continue,
-                other => panic!("child {child} did not stop before exec: {other:?}"),
+        ForkResult::Parent { child } => {
+            let _ = close(gate_r);
+            kill(child, Signal::SIGSTOP).expect("failed to stop child");
+            loop {
+                match waitpid(child, Some(WaitPidFlag::WUNTRACED)) {
+                    Ok(WaitStatus::Stopped(_, Signal::SIGSTOP)) => break,
+                    Err(Errno::EINTR) => continue,
+                    other => panic!("child {child} did not stop: {other:?}"),
+                }
             }
-        },
+            // The child is stopped, so this byte only lets it exec once
+            // the scheduler resumes it.
+            write(gate_w, &[1]).expect("failed to open gate");
+            let _ = close(gate_w);
+            child
+        }
         ForkResult::Child => {
-            // Returns only once the scheduler selects us with SIGCONT.
-            kill(Pid::this(), Signal::SIGSTOP).expect("failed to stop self");
+            let _ = close(gate_w);
+            let mut byte = [0u8];
+            loop {
+                match read(gate_r, &mut byte) {
+                    Ok(1) => break,
+                    Err(Errno::EINTR) => continue,
+                    // EOF: the parent died without opening the gate, so
+                    // never run the workload unscheduled.
+                    _ => unsafe { libc::_exit(1) },
+                }
+            }
+            let _ = close(gate_r);
             execvp(&prog, &args).expect("execvp failed");
             unreachable!("execvp does not return on success");
         }
