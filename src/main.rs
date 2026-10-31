@@ -222,8 +222,9 @@ fn run_scheduler(config: &Config, out: &mut File) {
             thread::sleep(target - elapsed);
         }
 
-        // 1. Arrivals at this tick: fork+exec (paused) now, not earlier --
-        //    process creation coincides with logical arrival.
+        // 1. Arrivals at this tick: fork now (stopped before exec; it execs
+        //    when first selected), not earlier -- process creation
+        //    coincides with logical arrival.
         for i in 0..procs.len() {
             if procs[i].spec.arrival == tick && procs[i].pid.is_none() {
                 let pid = spawn_paused(&wpath, procs[i].spec.burst);

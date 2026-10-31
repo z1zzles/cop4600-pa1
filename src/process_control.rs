@@ -16,25 +16,43 @@ use nix::unistd::{execvp, fork, ForkResult, Pid};
 use std::ffi::CString;
 use std::time::Instant;
 
-/// Fork + exec `workload <ticks>`, immediately stopped (SIGSTOP) so it
-/// consumes no CPU until the scheduler explicitly resumes it.
-/// Returns the child's PID.
+/// Fork + exec `workload <ticks>`, stopped (SIGSTOP) before it runs any
+/// workload code, so it consumes no CPU until the scheduler explicitly
+/// resumes it. Returns the child's PID once the child is confirmed stopped.
 ///
-/// Note the inherent race: SIGSTOP is sent from the parent right after
-/// fork, but the child may not have reached `execvp` yet. Think through
-/// whether that matters for this assignment's correctness requirements,
-/// and be ready to explain your reasoning either way.
+/// Why the child stops itself, before execvp:
+///   Stopping it from the parent (kill(child, SIGSTOP) right after fork)
+///   races with the child, which is runnable the moment fork returns. If
+///   the parent loses the CPU before that signal lands, the child execs
+///   and burns part of its burst before any scheduling decision selected
+///   it. A child that stops itself cannot reach the workload until the
+///   scheduler's SIGCONT, however late the parent gets to run.
+///
+/// Why the parent must wait for that stop (WUNTRACED):
+///   A process can be selected in its arrival tick, microseconds after
+///   fork. If that SIGCONT arrived before the child had stopped itself it
+///   would do nothing, the child would then stop with nobody left to
+///   resume it, and reap_blocking would hang. For the same reason the
+///   parent no longer sends its own SIGSTOP: parent-stop, then SIGCONT,
+///   would let the child run on into its own stop and stay there.
 pub fn spawn_paused(workload_path: &str, ticks: u64) -> Pid {
+    // Built before fork so the child has as little to do as possible
+    // before stopping itself.
+    let prog = CString::new(workload_path).unwrap();
+    let args = [prog.clone(), CString::new(ticks.to_string()).unwrap()];
+
     match unsafe { fork() }.expect("fork failed") {
-        ForkResult::Parent { child } => {
-            kill(child, Signal::SIGSTOP).expect("failed to stop child");
-            child
-        }
+        ForkResult::Parent { child } => loop {
+            match waitpid(child, Some(WaitPidFlag::WUNTRACED)) {
+                Ok(WaitStatus::Stopped(_, Signal::SIGSTOP)) => return child,
+                Err(Errno::EINTR) => continue,
+                other => panic!("child {child} did not stop before exec: {other:?}"),
+            }
+        },
         ForkResult::Child => {
-            let prog = CString::new(workload_path).unwrap();
-            let arg0 = prog.clone();
-            let arg1 = CString::new(ticks.to_string()).unwrap();
-            execvp(&prog, &[arg0, arg1]).expect("execvp failed");
+            // Returns only once the scheduler selects us with SIGCONT.
+            kill(Pid::this(), Signal::SIGSTOP).expect("failed to stop self");
+            execvp(&prog, &args).expect("execvp failed");
             unreachable!("execvp does not return on success");
         }
     }
